@@ -24,6 +24,7 @@ exports.dayOfAdventureSchema = new Schema({
         day: Number,
         evening: Number,
     },
+    notes: String,
 });
 const DayOfAdventureModel = mongoose_1.default.model('DayOfAdventure', exports.dayOfAdventureSchema);
 exports.default = DayOfAdventureModel;

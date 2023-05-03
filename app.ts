@@ -21,10 +21,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(`${API}`, daysRouter);
 
-app.get('/', (req: Request, res: Response) => {
-  res.send('Today is Heavy Rain');
-});
-
 mongoose
   .connect(process.env.MONGO as string)
   .then(() => {

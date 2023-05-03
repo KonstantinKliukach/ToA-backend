@@ -11,6 +11,7 @@ export interface DayOfAdventure {
     evening: number | null;
   };
   dayNum: number;
+  notes: string;
 }
 
 export const dayOfAdventureSchema = new Schema<DayOfAdventure>({
@@ -31,6 +32,7 @@ export const dayOfAdventureSchema = new Schema<DayOfAdventure>({
     day: Number,
     evening: Number,
   },
+  notes: String,
 });
 
 const DayOfAdventureModel = mongoose.model(

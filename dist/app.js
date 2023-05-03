@@ -20,9 +20,6 @@ app.use((0, cors_1.default)());
 app.use(body_parser_1.default.urlencoded({ extended: false }));
 app.use(body_parser_1.default.json());
 app.use(`${consts_1.API}`, daysRouter_1.default);
-app.get('/', (req, res) => {
-    res.send('Today is Heavy Rain');
-});
 mongoose_1.default
     .connect(process.env.MONGO)
     .then(() => {

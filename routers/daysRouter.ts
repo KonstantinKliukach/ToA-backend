@@ -4,8 +4,12 @@ import * as daysController from '../controllers/days';
 
 const router = express.Router();
 
-router.get(`/days`, daysController.getDaysOfAdventures);
+router.get(`/days`, daysController.getDaysOfAdventure);
 
-router.post(`/days`, daysController.addDayOfAdventures);
+router.get(`/days/:id`, daysController.getDayOfAdventure);
+
+router.post(`/days/:id`, daysController.addNoteToDayOfAdventure);
+
+router.post(`/days`, daysController.addDayOfAdventure);
 
 export default router;
