@@ -16,16 +16,20 @@ exports.addDayOfAdventure = exports.addNoteToDayOfAdventure = exports.getDayOfAd
 const dayOfAdventure_1 = __importDefault(require("../models/dayOfAdventure"));
 const EncounterGenerator_1 = __importDefault(require("../utils/EncounterGenerator"));
 const WeatherGenerator_1 = __importDefault(require("../utils/WeatherGenerator"));
-const getDaysOfAdventure = (req, res) => {
-    dayOfAdventure_1.default.find()
-        .sort({ dayNum: 'desc' })
-        .then((days) => {
+const getDaysOfAdventure = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const query = dayOfAdventure_1.default.find();
+    query.sort({ dayNum: 'desc' });
+    if (req.query.onlyWithNotes) {
+        query.where('notes').exists(true);
+    }
+    try {
+        const days = yield query.exec();
         res.send(days);
-    })
-        .catch((err) => {
-        console.log(err);
-    });
-};
+    }
+    catch (error) {
+        console.log(error);
+    }
+});
 exports.getDaysOfAdventure = getDaysOfAdventure;
 const getDayOfAdventure = (req, res) => {
     const { id } = req.params;
@@ -41,15 +45,10 @@ const getDayOfAdventure = (req, res) => {
 };
 exports.getDayOfAdventure = getDayOfAdventure;
 const addNoteToDayOfAdventure = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id, notes } = req.params;
-    yield dayOfAdventure_1.default.findOneAndUpdate({ _id: id }, { notes });
-    try {
-        const day = dayOfAdventure_1.default.findOne({ _id: id });
-        res.send(day);
-    }
-    catch (error) {
-        console.log(error);
-    }
+    const { id } = req.params;
+    const { notes } = req.body;
+    const day = yield dayOfAdventure_1.default.findOneAndUpdate({ _id: id }, { notes }, { new: true });
+    res.send(day);
 });
 exports.addNoteToDayOfAdventure = addNoteToDayOfAdventure;
 const addDayOfAdventure = (req, res) => {

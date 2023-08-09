@@ -4,15 +4,25 @@ import { Request, Response } from 'express';
 import EncounterGenerator from '../utils/EncounterGenerator';
 import WeatherGenerator from '../utils/WeatherGenerator';
 
-export const getDaysOfAdventure = (req: Request, res: Response) => {
-  DayOfAdventureModel.find()
-    .sort({ dayNum: 'desc' })
-    .then((days: DayOfAdventure[]) => {
-      res.send(days);
-    })
-    .catch((err: Error) => {
-      console.log(err);
-    });
+interface Filters {
+  onlyWithNotes?: boolean;
+}
+
+export const getDaysOfAdventure = async (
+  req: Request<{}, {}, {}, Filters>,
+  res: Response
+) => {
+  const query = DayOfAdventureModel.find();
+  query.sort({ dayNum: 'desc' });
+  if (req.query.onlyWithNotes) {
+    query.where('notes').exists(true);
+  }
+  try {
+    const days = await query.exec();
+    res.send(days);
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export const getDayOfAdventure = (
@@ -32,17 +42,17 @@ export const getDayOfAdventure = (
 };
 
 export const addNoteToDayOfAdventure = async (
-  req: Request<{ id: string; notes: string }>,
+  req: Request<{ id: string }, {}, { notes: string }>,
   res: Response
 ) => {
-  const { id, notes } = req.params;
-  await DayOfAdventureModel.findOneAndUpdate({ _id: id }, { notes });
-  try {
-    const day = DayOfAdventureModel.findOne({ _id: id });
-    res.send(day);
-  } catch (error) {
-    console.log(error);
-  }
+  const { id } = req.params;
+  const { notes } = req.body;
+  const day = await DayOfAdventureModel.findOneAndUpdate(
+    { _id: id },
+    { notes },
+    { new: true }
+  );
+  res.send(day);
 };
 
 export const addDayOfAdventure = (
